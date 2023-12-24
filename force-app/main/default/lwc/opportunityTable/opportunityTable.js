@@ -60,7 +60,6 @@ export default class OpportunityTable extends LightningElement {
     }
 
     handleSelection(e) {
-        console.log(e);
         let selectedRows = e.detail.selectedRows;
         this.selectedIds.clear();
         selectedRows.forEach(el => {

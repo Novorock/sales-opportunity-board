@@ -10,43 +10,21 @@
                         size="small"></lightning-icon>
                     <span class="slds-assistive-text">Close</span>
                 </button>
-                <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">Select users to share opportunity</h2>
+                <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">Select users to share
+                    opportunity</h2>
             </header>
 
-            <div class="slds-modal__content slds-p-around_medium" style="display:flex; justify-content: center;" id="modal-content-id-1">
-                <div class="slds-m-top_x-small slds-scrollable_y" style="max-height:520px;width: 270px">
-                    <table class="slds-table slds-table_bordered" aria-labelledby="table-title table-subtitle">
-                        <thead>
-                            <tr class="slds-line-height_reset">
-                                <th scope="col">
-                                    User Name
-                                </th>
-
-                                <th>
-                                    <input class="popup-checkbox" type="checkbox" onclick={onCheckboxClick}
-                                        name="options" value="select-all-checkbox" tabindex="0" />
-                                </th>
-                            </tr>
-                        </thead>
-
-                        <tbody>
-                            <template for:each={users} for:item="user">
-                                <tr key={user.Id}>
-                                    <td>{user.Name}</td>
-                                    <td>
-                                        <input class="popup-checkbox" type="checkbox" onclick={onCheckboxClick}
-                                            name="options" value={user.Id} tabindex="0" />
-                                    </td>
-                                </tr>
-                            </template>
-                        </tbody>
-                    </table>
+            <div class="slds-modal__content slds-p-around_medium" style="display:flex; justify-content: center;"
+                id="modal-content-id-1">
+                <div class="slds-scrollable_y" style="max-height:350px;max-width: 200px">
+                    <lightning-datatable key-field="Id" data={users} columns={columns}
+                        onrowselection={handleSelection}></lightning-datatable>
                 </div>
             </div>
 
             <footer class="slds-modal__footer">
-                <button class="slds-button slds-button_neutral" onclick={cancelCallback}>Cancel</button>
-                <button class="slds-button slds-button_brand" onclick={confirmCallback}>Confirm</button>
+                <button class="slds-button slds-button_neutral" onclick={cancel}>Cancel</button>
+                <button class="slds-button slds-button_brand" onclick={confirm}>Confirm</button>
             </footer>
         </div>
     </section>
