@@ -1,0 +1,15 @@
+.table-container {
+    display: block;
+    background-color: #fff;
+    /* width: 600px; */
+}
+
+.spacious::before {
+    content: "\200B";
+}
+
+.paginator {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
