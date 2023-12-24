@@ -1,7 +1,7 @@
 <!-- sldsValidatorIgnore -->
 <template>
     <lightning-card>
-        <div class="slds-p-around_x-small">
+        <div class="slds-p-around_x-small" style="height: 270px;max-height:270px;">
             <div class="slds-grid">
                 <div class="slds-size_1-of-2">
                     <div>
@@ -11,19 +11,19 @@
 
                 <div class="slds-col slds-grid slds-grid_align-end slds-size_1-of-2">
                     <div class="slds-col">
-                        <lightning-button-icon icon-name="utility:add" variant="brand"
-                            alternative-text="Share records" class="slds-m-left_xx-small" title="Share records"
-                            onclick={openUserListPopup}></lightning-button-icon>
+                        <lightning-button-icon icon-name="utility:add" variant="brand" alternative-text="Share records"
+                            class="slds-m-left_xx-small" title="Add records"
+                            onclick={openAccountContactListPopup}></lightning-button-icon>
                     </div>
                     <div class="slds-col">
                         <lightning-button-icon icon-name="utility:delete" variant="brand"
                             alternative-text="Delete records" class="slds-m-left_xx-small" title="Delete records"
-                            onclick={deleteRecords}></lightning-button-icon>
+                            onclick={deleteRecordsFromWhiteList}></lightning-button-icon>
                     </div>
                 </div>
             </div>
 
-            <!-- <template lwc:if={loading}>
+            <template lwc:if={loading}>
                 <div style="height:6rem;position:relative">
                     <div role="status" class="slds-spinner slds-spinner_medium">
                         <span class="slds-assistive-text">Loading</span>
@@ -31,18 +31,18 @@
                         <div class="slds-spinner__dot-b"></div>
                     </div>
                 </div>
-            </template> -->
-            <!-- <template lwc:else> -->
-                <div class="slds-m-top_x-small">
+            </template>
+            <template lwc:else>
+                <div class="slds-scrollable_y slds-m-top_x-small" style="max-height:200px;">
                     <lightning-datatable key-field="Id" data={records} columns={columns}
                         onrowselection={handleSelection}>
                     </lightning-datatable>
                 </div>
-            <!-- </template> -->
+            </template>
         </div>
     </lightning-card>
 
-    <!-- <template lwc:if={userListPopupOpened}>
-        <c-user-list-popup confirm-callback={shareRecords} cancel-callback={closeUserListPopup}></c-user-list-popup>
-    </template> -->
+    <template lwc:if={accountContactListPopupOpened}>
+       <c-account-contact-list-popup cancel-callback={closeAccountContactListPopup} confirm-callback={addRecordsToWhiteList}></c-account-contact-list-popup>
+    </template>
 </template>

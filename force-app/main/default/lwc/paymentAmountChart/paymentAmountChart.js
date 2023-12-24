@@ -19,6 +19,7 @@ export default class PaymentAmountChart extends LightningElement {
         options: {
             title: {
                 display: true,
+                maintainAspectRatio: false,
                 text: "Opportunities Payments Stats"
             }
         }
@@ -33,9 +34,11 @@ export default class PaymentAmountChart extends LightningElement {
         Promise.all([
             loadScript(this, chartjs)
         ]).then(() => {
-            const ctx = this.template.querySelector('canvas.barChart').getContext('2d');
+            const ctx = this.template.querySelector('canvas.dntChart').getContext('2d');
             let copy = JSON.parse(JSON.stringify(this.config));
             this.chart = new window.Chart(ctx, copy);
+            this.chart.canvas.parentNode.style.height = '100%';
+            this.chart.canvas.parentNode.style.width = '100%';
         }).catch(error => {
             console.log(`Unable to load chartjs: ${error}`);
         });

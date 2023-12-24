@@ -1,6 +1,9 @@
 import { LightningElement } from 'lwc';
 
 export default class WhiteList extends LightningElement {
+    loading = false;
+    accountContactListPopupOpened = false;
+
     columns = [
         { label: "Name", fieldName: "Name" },
         { label: "Record Type", fieldName: "RecordType" }
@@ -28,11 +31,11 @@ export default class WhiteList extends LightningElement {
 
     openAccountContactListPopup(e) {
         e.target?.blur();
-        this.userListPopupOpened = true;
+        this.accountContactListPopupOpened = true;
     }
 
     closeAccountContactListPopup = () => {
-        this.userListPopupOpened = false;
+        this.accountContactListPopupOpened = false;
     }
 
     addRecordsToWhiteList = (records) => {
