@@ -25,8 +25,8 @@ export default class UserListPopup extends LightningElement {
 
     confirm(e) {
         e.target?.blur();
-        console.log('Confirm');
         this.confirmCallback(this.selectedUsersIds);
+        this.cancelCallback();
     }
 
     cancel(e) {

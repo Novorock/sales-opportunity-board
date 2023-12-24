@@ -14,11 +14,11 @@
             <div class="slds-col slds-grid slds-grid_align-end slds-size_1-of-2">
                 <div class="slds-col">
                     <lightning-button-icon icon-name="utility:share" variant="brand" alternative-text="Share records"
-                        class="slds-m-left_xx-small" title="Share records"></lightning-button-icon>
+                        class="slds-m-left_xx-small" title="Share records" onclick={openUserListPopup}></lightning-button-icon>
                 </div>
                 <div class="slds-col">
-                    <lightning-button-icon icon-name="utility:delete" variant="brand" alternative-text="delete records"
-                        class="slds-m-left_xx-small" title="delete records"></lightning-button-icon>
+                    <lightning-button-icon icon-name="utility:delete" variant="brand" alternative-text="Delete records"
+                        class="slds-m-left_xx-small" title="Delete records" onclick={deleteRecords}></lightning-button-icon>
                 </div>
             </div>
         </div>
@@ -60,4 +60,8 @@
             </div>
         </div>
     </div>
+
+    <template lwc:if={userListPopupOpened}>
+        <c-user-list-popup confirm-callback={shareRecords} cancel-callback={closeUserListPopup}></c-user-list-popup>
+    </template>
 </template>

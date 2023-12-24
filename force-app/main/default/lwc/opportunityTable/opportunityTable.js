@@ -3,6 +3,7 @@ import getOpportunitiesPage from '@salesforce/apex/OpportunityDataService.getOpp
 
 export default class OpportunityTable extends LightningElement {
     loading = true;
+    userListPopupOpened = false;
 
     columns = [
         { label: "Name", fieldName: "Name" },
@@ -82,5 +83,22 @@ export default class OpportunityTable extends LightningElement {
         if (this.currentPage < this.pagesTotalAmount) {
             this.refreshData(this.currentPage + 1);
         }
+    }
+
+    openUserListPopup(e) {
+        e.target?.blur();
+        this.userListPopupOpened = true;
+    }
+
+    closeUserListPopup = () => {
+        this.userListPopupOpened = false;
+    }
+
+    shareRecords = (users) => {
+        console.log(users);
+    }
+
+    deleteRecords() {
+        console.log(this.selectedIds);
     }
 }
