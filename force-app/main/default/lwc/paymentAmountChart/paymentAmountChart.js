@@ -20,6 +20,8 @@ export default class PaymentAmountChart extends LightningElement {
             title: {
                 display: true,
                 maintainAspectRatio: false,
+                aspectRatio: 1,
+                resizeDelay: 10,
                 text: "Opportunities Payments Stats"
             }
         }

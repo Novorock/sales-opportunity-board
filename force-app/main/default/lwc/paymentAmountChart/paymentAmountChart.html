@@ -2,7 +2,7 @@
     <lightning-card>
         <div style="height:270px;max-height:270px">
             <div if:true={isChartInitialized}
-                class="slds-p-around_small slds-grid slds-grid--vertical-align-center slds-grid--align-center">
+                class="slds-grid slds-grid--vertical-align-center slds-grid--align-center">
                 <canvas class="dntChart" lwc:dom="manual"></canvas>
             </div>
             <div if:false={isChartInitialized}>
