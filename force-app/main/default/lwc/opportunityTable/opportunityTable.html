@@ -23,7 +23,7 @@
             </div>
         </div>
 
-        <!-- <template lwc:if={loading}>
+        <template lwc:if={loading}>
             <div style="height:6rem;position:relative">
                 <div role="status" class="slds-spinner slds-spinner_medium">
                     <span class="slds-assistive-text">Loading</span>
@@ -31,49 +31,14 @@
                     <div class="slds-spinner__dot-b"></div>
                 </div>
             </div>
-        </template> -->
-        <!-- <template lwc:else> -->
+        </template>
+        <template lwc:else>
             <div class="slds-m-top_x-small">
-                <div>
-                    <table class="slds-table slds-table_bordered" aria-labelledby="table-title table-subtitle">
-                        <thead>
-                            <tr class="slds-line-height_reset">
-                                <th>
-                                    <input class="table-checkbox" type="checkbox" onclick={onCheckboxClick}
-                                        name="options" value="select-all-checkbox" tabindex="0" />
-                                </th>
-
-                                <th scope="col">
-                                    Opportunity Name
-                                </th>
-
-                                <th scope="col">
-                                    Amount
-                                </th>
-
-                                <th scope="col">
-                                    Stage
-                                </th>
-                            </tr>
-                        </thead>
-
-                        <tbody>
-                            <template for:each={opportunities} for:item="opportunity">
-                                <tr key={opportunity.Id}>
-                                    <td>
-                                        <input class="table-checkbox" type="checkbox" onclick={onCheckboxClick}
-                                            name="options" value={opportunity.Id} tabindex="0" />
-                                    </td>
-                                    <td>{opportunity.Name}</td>
-                                    <td>{opportunity.Amount}</td>
-                                    <td>{opportunity.Stage}</td>
-                                </tr>
-                            </template>
-                        </tbody>
-                    </table>
-                </div>
+                <lightning-datatable key-field="Id" data={opportunities} columns={columns}
+                    onrowselection={handleSelection}>
+                </lightning-datatable>
             </div>
-        <!-- </template> -->
+        </template>
 
         <div class="paginator slds-p-around_x-small">
             <div class="slds-m-right_xx-small">

@@ -4,21 +4,24 @@ import getOpportunitiesPage from '@salesforce/apex/OpportunityDataService.getOpp
 export default class OpportunityTable extends LightningElement {
     loading = true;
 
+    columns = [
+        { label: "Name", fieldName: "Name" },
+        { label: "Amount", fieldName: "Amount" },
+        { label: "Stage", fieldName: "Stage" }
+    ];
     @track
     opportunities = [...Array(10)].map((_, index) => {
         const stages = ["Prospecting", "Fully Paid", "Partially Paid"];
-        
+
         return {
             Id: index,
             Name: "Opportunity" + index,
             Amount: Math.floor(Math.random() * 100),
-            Stage: stages[Math.floor(Math.random() * stages.length)] 
+            Stage: stages[Math.floor(Math.random() * stages.length)]
         }
     });
-
-    activeCheckboxes = new Set([]);
+    selectedIds = new Set();
     hint = "";
-
     currentPage = 1;
     pagesTotalAmount = 10;
     previousDisabled = true;
@@ -33,8 +36,7 @@ export default class OpportunityTable extends LightningElement {
             this.currentPage = p;
             this.pagesTotalAmount = copy.PaginationData.PagesTotalAmount;
             this.loading = false;
-
-            this.activeCheckboxes.clear();
+            this.selectedIds.clear();
             this.hint = "";
 
             if (this.currentPage === 1) {
@@ -57,50 +59,15 @@ export default class OpportunityTable extends LightningElement {
         this.refreshData(1);
     }
 
-    onCheckboxClick(e) {
-        let value = e.target.value;
-
-        if ("select-all-checkbox" === value) {
-            let checkboxes = this.template.querySelectorAll(".table-checkbox");
-
-            if (this.activeCheckboxes.has(value)) {
-                this.activeCheckboxes.clear();
-
-                for (let i = 0; i < checkboxes.length; i++) {
-                    checkboxes[i].checked = false;
-                }
-            } else {
-                this.activeCheckboxes.add(value);
-
-                for (let i = 0; i < checkboxes.length; i++) {
-                    checkboxes[i].checked = true;
-                }
-
-                for (let i = 0; i < this.opportunities.length; i++) {
-                    this.activeCheckboxes.add(this.opportunities[i].Id);
-                }
-            }
-        } else if (this.activeCheckboxes.has(value)) {
-            this.activeCheckboxes.delete(value);
-            if (this.activeCheckboxes.size < 2 && this.activeCheckboxes.has("select-all-checkbox")) {
-                let checkboxes = this.template.querySelectorAll(".table-checkbox");
-
-                this.activeCheckboxes.clear();
-
-                for (let i = 0; i < checkboxes.length; i++) {
-                    checkboxes[i].checked = false;
-                }
-            }
-        } else {
-            this.activeCheckboxes.add(value);
-        }
-
-        let n = this.activeCheckboxes.has('select-all-checkbox') ? this.activeCheckboxes.size - 1 : this.activeCheckboxes.size;
-        if (n === 0) {
-            this.hint = "";
-        } else {
-            this.hint = this.hint = `${n} items selected from 10`;
-        }
+    handleSelection(e) {
+        console.log(e);
+        let selectedRows = e.detail.selectedRows;
+        this.selectedIds.clear();
+        selectedRows.forEach(el => {
+            this.selectedIds.add(el.Id);
+        });
+        
+        this.hint = this.selectedIds.size > 0 ? `${this.selectedIds.size} items selected` : ""; 
     }
 
     previousPage(e) {
