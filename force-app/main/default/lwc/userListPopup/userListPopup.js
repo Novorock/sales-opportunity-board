@@ -1,31 +1,41 @@
-import { LightningElement, api } from 'lwc';
+import { LightningElement, api, track } from 'lwc';
+import getAllUsers from '@salesforce/apex/UserDataService.getAllUsers';
 
 export default class UserListPopup extends LightningElement {
     @api confirmCallback;
     @api cancelCallback;
+    loading = true;
 
     columns = [
         { label: "User Name", fieldName: "Name" }
     ];
+    @track
     users = [...Array(25)].map((_, index) => {
         return {
             Id: index,
             Name: "User " + index
         }
     });
-    selectedUsersIds = new Set([]);
+    selectedUserId;
+
+    connectedCallback() {
+        getAllUsers().then((data) => {
+            let copy = JSON.parse(JSON.stringify(data));
+            this.users = copy.users;
+            this.loading = false;
+        }).catch((error) => {
+            console.log(error);
+        })
+    }
 
     handleSelection(e) {
         let selectedRows = e.detail.selectedRows;
-        this.selectedUsersIds.clear();
-        selectedRows.forEach(el => {
-            this.selectedUsersIds.add(el.Id);
-        });
+        this.selectedUserId = selectedRows[0].Id;
     }
 
     confirm(e) {
         e.target?.blur();
-        this.confirmCallback(this.selectedUsersIds);
+        this.confirmCallback(this.selectedUserId);
         this.cancelCallback();
     }
 

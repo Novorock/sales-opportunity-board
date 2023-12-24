@@ -16,10 +16,21 @@
 
             <div class="slds-modal__content slds-p-around_medium" style="display:flex; justify-content: center;"
                 id="modal-content-id-1">
-                <div class="slds-scrollable_y" style="max-height:350px;max-width: 200px">
-                    <lightning-datatable key-field="Id" data={users} columns={columns}
-                        onrowselection={handleSelection}></lightning-datatable>
-                </div>
+                <template lwc:if={loading}>
+                    <div style="height:6rem;position:relative">
+                        <div role="status" class="slds-spinner slds-spinner_medium">
+                            <span class="slds-assistive-text">Loading</span>
+                            <div class="slds-spinner__dot-a"></div>
+                            <div class="slds-spinner__dot-b"></div>
+                        </div>
+                    </div>
+                </template>
+                <template lwc:else>
+                    <div class="slds-scrollable_y" style="max-height:350px;max-width: 200px">
+                        <lightning-datatable key-field="Id" data={users} columns={columns}
+                            onrowselection={handleSelection} max-row-selection="1"></lightning-datatable>
+                    </div>
+                </template>
             </div>
 
             <footer class="slds-modal__footer">
