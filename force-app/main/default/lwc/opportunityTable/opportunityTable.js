@@ -111,9 +111,9 @@ export default class OpportunityTable extends LightningElement {
                 }));
                 this.refreshData(this.currentPage);
             }).catch((error) => {
+                console.log(error);
                 this.dispatchEvent(new ShowToastEvent({
                     title: "Woops! Something went wrong",
-                    message: error.message,
                     variant: "error"
                 }));
             });
