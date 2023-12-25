@@ -19,9 +19,8 @@ export default class PaymentAmountChart extends LightningElement {
         options: {
             title: {
                 display: true,
-                maintainAspectRatio: false,
-                aspectRatio: 1,
-                resizeDelay: 10,
+                resizeDelay: 3,
+                responsive: false,
                 text: "Opportunities Payments Stats"
             }
         }
@@ -39,8 +38,8 @@ export default class PaymentAmountChart extends LightningElement {
             const ctx = this.template.querySelector('canvas.dntChart').getContext('2d');
             let copy = JSON.parse(JSON.stringify(this.config));
             this.chart = new window.Chart(ctx, copy);
-            this.chart.canvas.parentNode.style.height = '100%';
-            this.chart.canvas.parentNode.style.width = '100%';
+            this.chart.canvas.parentNode.style.max_height = '270px';
+            this.chart.canvas.parentNode.style.max_width = '450px';
         }).catch(error => {
             console.log(`Unable to load chartjs: ${error}`);
         });

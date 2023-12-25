@@ -1,5 +1,8 @@
 import { LightningElement, track } from 'lwc';
 import getOpportunitiesPage from '@salesforce/apex/OpportunityDataService.getOpportunitiesPage';
+import deleteOpportunities from '@salesforce/apex/OpportunityDataService.deleteOpportunities';
+import { ShowToastEvent } from 'lightning/platformShowToastEvent';
+
 
 export default class OpportunityTable extends LightningElement {
     loading = true;
@@ -21,7 +24,7 @@ export default class OpportunityTable extends LightningElement {
             Stage: stages[Math.floor(Math.random() * stages.length)]
         }
     });
-    selectedIds = new Set();
+    selectedIds = [];
     hint = "";
     currentPage = 1;
     pagesTotalAmount = 10;
@@ -37,7 +40,7 @@ export default class OpportunityTable extends LightningElement {
             this.currentPage = p;
             this.pagesTotalAmount = copy.PaginationData.PagesTotalAmount;
             this.loading = false;
-            this.selectedIds.clear();
+            this.selectedIds = [];
             this.hint = "";
 
             if (this.currentPage === 1) {
@@ -62,12 +65,12 @@ export default class OpportunityTable extends LightningElement {
 
     handleSelection(e) {
         let selectedRows = e.detail.selectedRows;
-        this.selectedIds.clear();
+        this.selectedIds = [];
         selectedRows.forEach(el => {
-            this.selectedIds.add(el.Id);
+            this.selectedIds.push(el.Id);
         });
-        
-        this.hint = this.selectedIds.size > 0 ? `${this.selectedIds.size} items selected` : ""; 
+
+        this.hint = this.selectedIds.length > 0 ? `${this.selectedIds.length} items selected` : "";
     }
 
     previousPage(e) {
@@ -99,6 +102,21 @@ export default class OpportunityTable extends LightningElement {
     }
 
     deleteRecords() {
-        console.log(this.selectedIds);
+        if (this.selectedIds.length > 0) {
+            deleteOpportunities({ recordsIds: this.selectedIds }).then(() => {
+                this.dispatchEvent(new ShowToastEvent({
+                    title: "Success!",
+                    message: "Records are deleted",
+                    variant: "success"
+                }));
+                this.refreshData(this.currentPage);
+            }).catch((error) => {
+                this.dispatchEvent(new ShowToastEvent({
+                    title: "Woops! Something went wrong",
+                    message: error.message,
+                    variant: "error"
+                }));
+            });
+        }
     }
 }

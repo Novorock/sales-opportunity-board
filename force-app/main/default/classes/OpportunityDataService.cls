@@ -43,6 +43,22 @@ global with sharing class OpportunityDataService {
         return oppPage;
     }
 
+    @AuraEnabled
+    public static void deleteOpportunities(List<String> recordsIds) {
+        List<Opportunity> opportunities = [
+            SELECT Id FROM Opportunity
+            WHERE Id IN :recordsIds
+        ];
+
+        try {
+            delete opportunities;
+        } catch (Exception ex) {
+            AuraException exc = new AuraException();
+            exc.setMessage('Unabled to delete records. Problem is caused by: ' + ex.getMessage());
+            throw exc;
+        }
+    }
+
     global class PaginationData {
         @AuraEnabled
         global Integer RecordsTotalCount;

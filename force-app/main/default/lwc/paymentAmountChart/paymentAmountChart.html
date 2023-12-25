@@ -1,19 +1,16 @@
 <template>
-    <lightning-card>
-        <div style="height:270px;max-height:270px">
-            <div if:true={isChartInitialized}
-                class="slds-grid slds-grid--vertical-align-center slds-grid--align-center">
-                <canvas class="dntChart" lwc:dom="manual"></canvas>
-            </div>
-            <div if:false={isChartInitialized}>
-                <div style="height:6rem;position:relative">
-                    <div role="status" class="slds-spinner slds-spinner_medium">
-                        <span class="slds-assistive-text">Loading</span>
-                        <div class="slds-spinner__dot-a"></div>
-                        <div class="slds-spinner__dot-b"></div>
-                    </div>
+    <div>
+        <div if:true={isChartInitialized}>
+            <canvas class="dntChart" style="width:450px;height:270px;max-width:450px;max-height:270px;" lwc:dom="manual"></canvas>
+        </div>
+        <div if:false={isChartInitialized}>
+            <div style="height:6rem;position:relative">
+                <div role="status" class="slds-spinner slds-spinner_medium">
+                    <span class="slds-assistive-text">Loading</span>
+                    <div class="slds-spinner__dot-a"></div>
+                    <div class="slds-spinner__dot-b"></div>
                 </div>
             </div>
         </div>
-    </lightning-card>
+    </div>
 </template>
