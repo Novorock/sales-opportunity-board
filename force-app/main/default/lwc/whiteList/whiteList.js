@@ -1,14 +1,15 @@
-import { LightningElement } from 'lwc';
+import { LightningElement, track } from 'lwc';
+import getAllWhiteListRecords from "@salesforce/apex/WhiteListDataService.getAllWhiteListItems"
 
 export default class WhiteList extends LightningElement {
-    loading = false;
+    loading = true;
     accountContactListPopupOpened = false;
 
     columns = [
         { label: "Name", fieldName: "Name" },
         { label: "Record Type", fieldName: "RecordType" }
     ];
-
+    @track
     records = [...Array(10)].map((_, index) => {
         const recordsTypes = ['Account', 'Contact'];
         return {
@@ -18,6 +19,14 @@ export default class WhiteList extends LightningElement {
         }
     });
     selectedIds = new Set();
+
+    connectedCallback() {
+        getAllWhiteListRecords().then((data) => {
+            let copy = JSON.parse(JSON.stringify(data));
+            this.records = copy.items;
+            this.loading = false;
+        });
+    }
     
     handleSelection(e) {
         let selectedRows = e.detail.selectedRows;
