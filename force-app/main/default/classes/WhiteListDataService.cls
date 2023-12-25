@@ -1,60 +1,51 @@
 global with sharing class WhiteListDataService {
     @AuraEnabled
-    public static Boolean addToWhiteList(WhiteListItemsData data) {
-        if (data.items == null || data.items.size() < 1) {
-            return true;
+    public static void addToWhiteList(List<String> recordsIds) {
+        Set<String> ids = new Set<String>(recordsIds);
+
+        if (ids == null || ids.size() < 1) {
+            return;
         }
 
-        Schema.DescribeFieldResult fieldDescription = WhiteListItem__c.RecordType__c.getDescribe();
-        Set<String> entries = new Set<String>();
-        Set<String> ids = new Set<String>();
+        List<WhiteListItem__c> items = new List<WhiteListItem__c>();
 
-        for (Schema.PicklistEntry entry : fieldDescription.getPicklistValues()) {
-            entries.add(entry.getValue());
-        }
-        
-        for (WhiteListItem__c item : [SELECT ParentId__c FROM WhiteListItem__c]) {
-            ids.add(item.ParentId__c);
+        for (Account account : [SELECT Id, Name FROM Account WHERE Id IN :ids]) {
+            WhiteListItem__c item = new WhiteListItem__c();
+            item.ParentId__c = account.Id;
+            item.Name = account.Name;
+            item.RecordType__c = 'Account';
+            items.add(item);
         }
 
-        List<WhiteListItem__c> newItems = new List<WhiteListItem__c>();
-
-        for (WhiteListItemData item : data.items) {
-            if (ids.contains(item.Id))
-                continue;
-            
-            WhiteListItem__c newItem = new WhiteListItem__c();
-            newItem.ParentId__c = item.Id;
-            newItem.Name = item.Name;
-            newItem.RecordType__c = item.RecordType;
-            newItems.add(newItem);
+        for (Contact contact : [SELECT Id, Name FROM Contact WHERE Id IN :ids]) {
+            WhiteListItem__c item = new WhiteListItem__c();
+            item.ParentId__c = contact.Id;
+            item.Name = contact.Name;
+            item.RecordType__c = 'Contact';
+            items.add(item);
         }
 
-        insert newItems;
-
-        return true;
+        try {
+            insert items;
+        } catch(Exception exc) {
+            AuraException ex = new AuraException();
+            ex.setMessage('Unabled to add records to white list. A problem is caused by: ' + exc.getMessage());
+            throw ex;
+        }
     }
 
     @AuraEnabled
-    public static Boolean removeFromWhiteList(WhiteListItemsData data) {
-        if (data.items == null || data.items.size() < 1) {
-            return true;
-        }
-
-        Set<String> ids = new Set<String>();
-
-        for (WhiteListItemData item : data.items) {            
-            ids.add(item.Id);
+    public static void removeFromWhiteList(List<String> recordsIds) {
+        if (recordsIds == null || recordsIds.size() < 1) {
+            return;
         }
         
         List<WhiteListItem__c> items = [
             SELECT Id FROM WhiteListItem__c
-            WHERE ParentId__c IN :ids
+            WHERE ParentId__c IN :recordsIds
         ];
 
         delete items;
-
-        return true;
     }
 
     @AuraEnabled
@@ -73,6 +64,7 @@ global with sharing class WhiteListDataService {
         return data;
     }
 
+    @AuraEnabled
     public static WhiteListItemsData getRecordsNotInWhiteList() {
         WhiteListItemsData data = new WhiteListItemsData();
         data.items = new List<WhiteListItemData>();
