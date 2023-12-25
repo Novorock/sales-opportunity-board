@@ -1,15 +1,5 @@
 global with sharing class UserDataService {
     @AuraEnabled
-    public static boolean hasAdminPermissions() {
-        Boolean hasPermission = [
-            SELECT PermissionsAuthorApex FROM Profile
-            WHERE Id=:UserInfo.getProfileId()
-        ].PermissionsAuthorApex;
-
-        return hasPermission;
-    }
-
-    @AuraEnabled
     public static UsersData getAllUsers() {
         UsersData data = new UsersData();
         data.users = new List<UserData>();

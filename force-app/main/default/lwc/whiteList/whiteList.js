@@ -7,6 +7,7 @@ import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 export default class WhiteList extends LightningElement {
     loading = true;
     accountContactListPopupOpened = false;
+    deleteButtonDisabled = true;
 
     columns = [
         { label: "Name", fieldName: "Name" },
@@ -28,6 +29,7 @@ export default class WhiteList extends LightningElement {
             let copy = JSON.parse(JSON.stringify(data));
             this.records = copy.items;
             this.loading = false;
+            this.deleteButtonDisabled = true;
         });
     }
 
@@ -42,7 +44,7 @@ export default class WhiteList extends LightningElement {
             this.selectedIds.push(el.Id);
         });
 
-        this.hint = this.selectedIds.size > 0 ? `${this.selectedIds.size} items selected` : "";
+        this.deleteButtonDisabled = this.selectedIds.length < 1;
     }
 
     openAccountContactListPopup(e) {

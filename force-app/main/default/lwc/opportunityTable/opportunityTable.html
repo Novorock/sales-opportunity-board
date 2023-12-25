@@ -16,12 +16,12 @@
                     <div class="slds-col">
                         <lightning-button-icon icon-name="utility:share" variant="brand"
                             alternative-text="Share records" class="slds-m-left_xx-small" title="Share records"
-                            onclick={openUserListPopup}></lightning-button-icon>
+                            onclick={openUserListPopup} disabled={shareButtonDisabled}></lightning-button-icon>
                     </div>
                     <div class="slds-col">
                         <lightning-button-icon icon-name="utility:delete" variant="brand"
                             alternative-text="Delete records" class="slds-m-left_xx-small" title="Delete records"
-                            onclick={deleteRecords}></lightning-button-icon>
+                            onclick={deleteRecords} disabled={deleteButtonDisabled}></lightning-button-icon>
                     </div>
                 </div>
             </div>

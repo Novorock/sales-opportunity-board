@@ -7,6 +7,8 @@ import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 export default class OpportunityTable extends LightningElement {
     loading = true;
     userListPopupOpened = false;
+    shareButtonDisabled = true;
+    deleteButtonDisabled = true;
 
     columns = [
         { label: "Name", fieldName: "Name" },
@@ -40,6 +42,8 @@ export default class OpportunityTable extends LightningElement {
             this.currentPage = p;
             this.pagesTotalAmount = copy.PaginationData.PagesTotalAmount;
             this.loading = false;
+            this.shareButtonDisabled = true;
+            this.deleteButtonDisabled = true;
             this.selectedIds = [];
             this.hint = "";
 
@@ -71,6 +75,7 @@ export default class OpportunityTable extends LightningElement {
         });
 
         this.hint = this.selectedIds.length > 0 ? `${this.selectedIds.length} items selected` : "";
+        this.shareButtonDisabled = this.deleteButtonDisabled = this.selectedIds.length < 1;
     }
 
     previousPage(e) {
