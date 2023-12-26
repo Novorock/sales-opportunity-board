@@ -27,10 +27,9 @@ global with sharing class WhiteListDataService {
 
         try {
             insert items;
-        } catch(Exception exc) {
-            AuraException ex = new AuraException();
-            ex.setMessage('Unabled to add records to white list. A problem is caused by: ' + exc.getMessage());
-            throw ex;
+        } catch (Exception e) {
+            String errorMsg = e.getMessage().substringAfter('_EXCEPTION,').substringBefore(':');
+            throw new AuraHandledException(errorMsg);
         }
     }
 
@@ -45,7 +44,12 @@ global with sharing class WhiteListDataService {
             WHERE ParentId__c IN :recordsIds
         ];
 
-        delete items;
+        try {
+            delete items;
+        } catch (Exception e) {
+            String errorMsg = e.getMessage().substringAfter('_EXCEPTION,').substringBefore(':');
+            throw new AuraHandledException(errorMsg);
+        }
     }
 
     @AuraEnabled

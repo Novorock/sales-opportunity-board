@@ -1,6 +1,10 @@
 global with sharing class OpportunityDataService {
     @AuraEnabled
     public static OpportunitiesPage getOpportunitiesPage(Integer page) {
+        if (page < 1) {
+            page = 1;
+        }
+
         PaginationData paginationData = new PaginationData();        
         Integer count = Database.countQuery('SELECT COUNT() FROM Opportunity');
         paginationData.CurrentPage = page;
@@ -12,17 +16,10 @@ global with sharing class OpportunityDataService {
             paginationData.PagesTotalAmount = count / 10 + 1;
         }
 
-        if (page < 1) {
-            paginationData.CurrentPage = 1;
-        } else if (page > paginationData.PagesTotalAmount) {
+        if (page > paginationData.PagesTotalAmount) {
+            page = paginationData.PagesTotalAmount;
             paginationData.CurrentPage = paginationData.PagesTotalAmount;
         }
-
-        // if (page < 1 || page > paginationData.PagesTotalAmount) {
-        //     IllegalArgumentException ex = new IllegalArgumentException();
-        //     ex.setMessage('Invalid value for page: ' + page);
-        //     throw ex;
-        // }
 
         Integer offset = (page - 1) * 10;
 
