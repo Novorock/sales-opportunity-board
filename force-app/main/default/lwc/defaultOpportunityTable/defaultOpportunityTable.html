@@ -1,0 +1,51 @@
+<!-- sldsValidatorIgnore -->
+<template>
+    <lightning-card>
+        <div class="slds-p-around_x-small">
+            <div class="slds-grid slds-grid_vertical-align-end">
+                <div class="slds-col slds-size_1-of-2">
+                    <div>
+                        <h2 id="table-title" class="slds-text-heading_medium">Opportunities Table</h2>
+                    </div>
+                </div>
+            </div>
+
+            <template lwc:if={loading}>
+                <div style="height:6rem;position:relative">
+                    <div role="status" class="slds-spinner slds-spinner_medium">
+                        <span class="slds-assistive-text">Loading</span>
+                        <div class="slds-spinner__dot-a"></div>
+                        <div class="slds-spinner__dot-b"></div>
+                    </div>
+                </div>
+            </template>
+            <template lwc:else>
+                <div class="slds-m-top_x-small">
+                    <lightning-datatable key-field="Id" data={opportunities} columns={columns}
+                        onrowselection={handleSelection} onrowaction={callRowAction} hide-checkbox-column>
+                    </lightning-datatable>
+                </div>
+            </template>
+
+            <div class="slds-p-around_x-small" style="display:flex;justify-content:center;align-items:center">
+                <div class="slds-m-right_xx-small">
+                    <lightning-button-icon tab-index="-1" disabled={previousDisabled} icon-name="utility:chevronleft"
+                        variant="brand" onclick={previousPage} alternative-text="Previous">
+                    </lightning-button-icon>
+                </div>
+
+                <div class="slds-m-right_xx-small">
+                    <span>
+                        {currentPage} page of {pagesTotalAmount}
+                    </span>
+                </div>
+
+                <div>
+                    <lightning-button-icon tab-index="-1" disabled={nextDisabled} icon-name="utility:chevronright"
+                        variant="brand" onclick={nextPage} alternative-text="Next">
+                    </lightning-button-icon>
+                </div>
+            </div>
+        </div>
+    </lightning-card>
+</template>

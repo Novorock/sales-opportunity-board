@@ -16,6 +16,13 @@ global with sharing class UserDataService {
     @AuraEnabled
     public static void shareRecords(List<Id> recordsIds, Id userId) {
         List<OpportunityShare> shr = new List<OpportunityShare>();
+        List<Opportunity> opportunities = new List<Opportunity>();
+
+        for (Opportunity opportunity : [SELECT Id, StageName FROM Opportunity WHERE Id IN :recordsIds]) {
+            opportunity.StageName = 'Shared';
+            opportunities.add(opportunity);
+        }
+
         for (Id recordId : recordsIds) {
             OpportunityShare opportunityShr = new OpportunityShare();
             opportunityShr.OpportunityId = recordId;
@@ -34,6 +41,8 @@ global with sharing class UserDataService {
                 throw ex;
             }
         }
+
+        update opportunities;
     }
 
     global class UserData {

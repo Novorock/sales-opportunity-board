@@ -22,7 +22,7 @@ global with sharing class OpportunityDataService {
 
         List<Opportunity> opportunities = [
             SELECT Id, Name, Amount, StageName FROM Opportunity
-            LIMIT 10 OFFSET :offset
+            WHERE NOT StageName='Approved' LIMIT 10 OFFSET :offset
         ];
 
         List<OpportunityData> data = new List<OpportunityData>();
@@ -41,6 +41,13 @@ global with sharing class OpportunityDataService {
         oppPage.PaginationData = paginationData;
 
         return oppPage;
+    }
+
+    @AuraEnabled
+    public static void approveOpportunity(String recordId) {
+        Opportunity opportunity = [SELECT Id FROM Opportunity WHERE Id=:recordId LIMIT 1][0];
+        opportunity.StageName = 'Approved';
+        update opportunity;
     }
 
     @AuraEnabled

@@ -10,12 +10,7 @@ export default class UserListPopup extends LightningElement {
         { label: "User Name", fieldName: "Name" }
     ];
     @track
-    users = [...Array(25)].map((_, index) => {
-        return {
-            Id: index,
-            Name: "User " + index
-        }
-    });
+    users = [];
     selectedUserId;
 
     connectedCallback() {

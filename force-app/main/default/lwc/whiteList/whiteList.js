@@ -14,14 +14,7 @@ export default class WhiteList extends LightningElement {
         { label: "Record Type", fieldName: "RecordType" }
     ];
     @track
-    records = [...Array(10)].map((_, index) => {
-        const recordsTypes = ['Account', 'Contact'];
-        return {
-            Id: index,
-            Name: "Record " + index,
-            RecordType: recordsTypes[Math.floor(Math.random() * recordsTypes.length)]
-        }
-    });
+    records = [];
     selectedIds = [];
 
     refreshData() {
