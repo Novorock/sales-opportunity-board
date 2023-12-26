@@ -4,50 +4,43 @@ trigger OpportunityOnDeleteCascade on Opportunity (before delete, after delete) 
         for (Opportunity opportunity : Trigger.Old) {
             ids.add(opportunity.Id);
         }
-
-        Set<String> contactsIds = new Set<String>();
+    
+        Map<String, String> junctionMap = new Map<String,String>(); 
+    
         for (OpportunityContactRole junction : [
-            SELECT Contact.Id FROM OpportunityContactRole
+            SELECT Opportunity.Id, Opportunity.Account.Id, Contact.Id FROM OpportunityContactRole
             WHERE Opportunity.Id IN :ids
         ]) {
-            contactsIds.add(junction.Contact.Id);
+            junctionMap.put(junction.Contact.Id, junction.Opportunity.Id);
+            junctionMap.put(junction.Opportunity.Account.Id, junction.Opportunity.Id);
+        }
+    
+        Set<String> prevented = new Set<String>();
+    
+        for (WhiteListItem__c item : [
+            SELECT ParentId__c FROM WhiteListItem__c
+            WHERE ParentId__c IN :junctionMap.keySet()
+        ]) {
+            prevented.add(junctionMap.get(item.ParentId__c));
+            junctionMap.remove(item.ParentId__c);
+        }
+    
+        for (Opportunity opportunity : Trigger.Old) {
+            if (prevented.contains(opportunity.Id)) {
+                Opportunity t = [SELECT Name FROM Opportunity WHERE Id = :opportunity.Id LIMIT 1][0];
+                opportunity.addError('Unabled to delete opportunity with name "' + t.Name + '", because it is related to item from white list.');
+            }
         }
 
-        
-        List<WhiteListItem__c> items = [
-            SELECT ParentId__c FROM WhiteListItem__c
-            WHERE ParentId__c IN :contactsIds
-        ];
-
-        Set<String> whiteListIds = new Set<String>();
-        for (WhiteListItem__c item : items) {
-            whiteListIds.add(item.ParentId__c);
-        } 
-        contactsIds.removeAll(whiteListIds);
-        
-        List<Contact> contacts = [SELECT Id FROM Contact WHERE Id IN :contactsIds];
-
-        delete contacts;
+        delete [SELECT Id FROM Contact WHERE Id IN :junctionMap.keySet()];
     } else if (Trigger.isAfter) {
-        Set<String> accountsIds = new Set<String>();
+        Set<Id> ids = new Set<Id>();
+        Set<Id> accountsIds = new Set<Id>();
 
         for (Opportunity opportunity : Trigger.Old) {
             accountsIds.add(opportunity.AccountId);
         }
 
-        List<WhiteListItem__c> items = [
-            SELECT ParentId__c FROM WhiteListItem__c
-            WHERE ParentId__c IN :accountsIds
-        ];
-
-        Set<String> whiteListIds = new Set<String>();
-        for (WhiteListItem__c item : items) {
-            whiteListIds.add(item.ParentId__c);
-        } 
-        accountsIds.removeAll(whiteListIds);
-    
-        List<Account> accounts = [SELECT Id FROM Account WHERE Id IN :accountsIds];
-
-        delete accounts;
+        delete [SELECT Id FROM Account WHERE Id IN :accountsIds];
     }
 }

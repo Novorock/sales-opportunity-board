@@ -12,11 +12,17 @@ global with sharing class OpportunityDataService {
             paginationData.PagesTotalAmount = count / 10 + 1;
         }
 
-        if (page < 1 || page > paginationData.PagesTotalAmount) {
-            IllegalArgumentException ex = new IllegalArgumentException();
-            ex.setMessage('Invalid value for page: ' + page);
-            throw ex;
+        if (page < 1) {
+            paginationData.CurrentPage = 1;
+        } else if (page > paginationData.PagesTotalAmount) {
+            paginationData.CurrentPage = paginationData.PagesTotalAmount;
         }
+
+        // if (page < 1 || page > paginationData.PagesTotalAmount) {
+        //     IllegalArgumentException ex = new IllegalArgumentException();
+        //     ex.setMessage('Invalid value for page: ' + page);
+        //     throw ex;
+        // }
 
         Integer offset = (page - 1) * 10;
 
@@ -47,7 +53,13 @@ global with sharing class OpportunityDataService {
     public static void approveOpportunity(String recordId) {
         Opportunity opportunity = [SELECT Id FROM Opportunity WHERE Id=:recordId LIMIT 1][0];
         opportunity.StageName = 'Approved';
-        update opportunity;
+
+        try {
+            update opportunity;
+        } catch (Exception e) {
+            String errorMsg = e.getMessage().substringAfter('_EXCEPTION,');
+            throw new AuraHandledException(errorMsg);
+        }
     }
 
     @AuraEnabled
@@ -59,10 +71,9 @@ global with sharing class OpportunityDataService {
 
         try {
             delete opportunities;
-        } catch (Exception ex) {
-            AuraException exc = new AuraException();
-            exc.setMessage('Unabled to delete records. Problem is caused by: ' + ex.getMessage());
-            throw exc;
+        } catch (Exception e) {
+            String errorMsg = e.getMessage().substringAfter('_EXCEPTION,').substringBefore(':');
+            throw new AuraHandledException(errorMsg);
         }
     }
 

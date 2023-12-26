@@ -31,18 +31,19 @@ global with sharing class UserDataService {
             shr.add(opportunityShr);
         }
 
-        Database.SaveResult[] sr = Database.insert(shr, false);
-
-        for (Database.SaveResult result : sr) {
-            if (!result.isSuccess()) {
-                Database.Error err = result.getErrors()[0];
-                AuraException ex = new AuraException();
-                ex.setMessage('Unable to share records. Exception caused by: ' + err.getMessage());
-                throw ex;
-            }
+        try {
+            insert shr;
+        } catch (Exception e) {
+            String errorMsg = e.getMessage().substringAfter('_EXCEPTION,');
+            throw new AuraHandledException(errorMsg);
         }
 
-        update opportunities;
+        try {
+            update opportunities;
+        } catch (Exception e) {
+            String errorMsg = e.getMessage().substringAfter('_EXCEPTION,');
+            throw new AuraHandledException(errorMsg);
+        }
     }
 
     global class UserData {

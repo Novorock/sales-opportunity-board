@@ -1,4 +1,5 @@
 import { LightningElement, track } from 'lwc';
+import shareRecords from '@salesforce/apex/UserDataService.shareRecords';
 import getOpportunitiesPage from '@salesforce/apex/OpportunityDataService.getOpportunitiesPage';
 import deleteOpportunities from '@salesforce/apex/OpportunityDataService.deleteOpportunities';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
@@ -39,7 +40,7 @@ export default class OpportunityTable extends LightningElement {
         getOpportunitiesPage({ page: p }).then((data) => {
             let copy = JSON.parse(JSON.stringify(data));
             this.opportunities = copy.Data;
-            this.currentPage = p;
+            this.currentPage = copy.PaginationData.CurrentPage;
             this.pagesTotalAmount = copy.PaginationData.PagesTotalAmount;
             this.loading = false;
             this.shareButtonDisabled = true;
@@ -61,6 +62,14 @@ export default class OpportunityTable extends LightningElement {
         }).catch((error) => {
             console.log(error);
         });
+    }
+
+    showToastEvent(title, msg, variant) {
+        this.dispatchEvent(new ShowToastEvent({
+            title: title,
+            message: msg,
+            variant: variant
+        }));
     }
 
     connectedCallback() {
@@ -102,25 +111,22 @@ export default class OpportunityTable extends LightningElement {
         this.userListPopupOpened = false;
     }
 
-    shareRecords = (users) => {
-        console.log(users);
+    shareRecords = (userId) => {
+        shareRecords({ recordsIds: this.selectedIds, userId: userId }).then(() => {
+            this.showToastEvent("Done!", "Sharing was successful.", "success");
+            this.refreshData(this.currentPage);
+        }).catch((error) => {
+            this.showToastEvent("Woops! Something went wrong.", error.body.message, "error");
+        });
     }
 
     deleteRecords() {
         if (this.selectedIds.length > 0) {
             deleteOpportunities({ recordsIds: this.selectedIds }).then(() => {
-                this.dispatchEvent(new ShowToastEvent({
-                    title: "Success!",
-                    message: "Records are deleted",
-                    variant: "success"
-                }));
+                this.showToastEvent("Done!", "Delete operation was successful.", "success");
                 this.refreshData(this.currentPage);
             }).catch((error) => {
-                console.log(error);
-                this.dispatchEvent(new ShowToastEvent({
-                    title: "Woops! Something went wrong",
-                    variant: "error"
-                }));
+                this.showToastEvent("Woops! Something went wrong.", error.body.message, "error");
             });
         }
     }

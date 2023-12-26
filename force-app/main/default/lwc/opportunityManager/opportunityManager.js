@@ -8,7 +8,7 @@ export default class OpportunityManager extends LightningElement {
 
     connectedCallback() {
         hasAdminPermissions().then((result) => {
-            // this.isDefaultUser = !result;
+            this.isDefaultUser = !result;
         });
     }
 

@@ -26,6 +26,14 @@ export default class WhiteList extends LightningElement {
         });
     }
 
+    showToastEvent(title, msg, variant) {
+        this.dispatchEvent(new ShowToastEvent({
+            title: title,
+            message: msg,
+            variant: variant
+        }));
+    }
+
     connectedCallback() {
         this.refreshData();
     }
@@ -52,19 +60,11 @@ export default class WhiteList extends LightningElement {
     addRecordsToWhiteList = (records) => {
         if (records.length > 0) {
             addToWhiteList({ recordsIds: records }).then(() => {
-                this.dispatchEvent(new ShowToastEvent({
-                    title: "Success!",
-                    message: "Records are added to white list",
-                    variant: "success"
-                }));
+                this.showToastEvent("Success!", "Adding records to white list was successful.", "success");
                 this.loading = true;
                 this.refreshData();
             }).catch((error) => {
-                this.dispatchEvent(new ShowToastEvent({
-                    title: "Woops! Something went wrong",
-                    message: error.message,
-                    variant: "error"
-                }));
+                this.showToastEvent("Woops! Something went wrong.", error.body.message, "error");
             });
         }
     }
@@ -72,19 +72,11 @@ export default class WhiteList extends LightningElement {
     deleteRecordsFromWhiteList() {
         if (this.selectedIds.length > 0) {
             removeFromWhiteList({ recordsIds: this.selectedIds }).then(() => {
-                this.dispatchEvent(new ShowToastEvent({
-                    title: "Success!",
-                    message: "Records are removed from white list",
-                    variant: "success"
-                }));
+                this.showToastEvent("Success!", "Removing records from white list was successful.", "success");
                 this.loading = true;
                 this.refreshData();
             }).catch((error) => {
-                this.dispatchEvent(new ShowToastEvent({
-                    title: "Woops! Something went wrong",
-                    message: error.message,
-                    variant: "error"
-                }));
+                this.showToastEvent("Woops! Something went wrong.", error.body.message, "error");
             });
         }
     }
