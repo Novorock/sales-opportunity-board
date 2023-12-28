@@ -25,7 +25,7 @@ global with sharing class OpportunityDataService {
 
         List<Opportunity> opportunities = [
             SELECT Id, Name, Amount, StageName FROM Opportunity
-            WHERE NOT StageName='Approved' LIMIT 10 OFFSET :offset
+            LIMIT 10 OFFSET :offset
         ];
 
         List<OpportunityData> data = new List<OpportunityData>();

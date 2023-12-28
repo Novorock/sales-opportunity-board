@@ -49,4 +49,21 @@ private class WhiteListDataServiceTest {
         items = [SELECT Id FROM WhiteListItem__c];
         System.assertEquals(1, items.size());
     }
+
+    @isTest
+    private static void testGetAllWhiteListItems() {
+        Account account = [SELECT Id FROM Account LIMIT 1][0];
+        Contact contact = [SELECT Id FROM Contact LIMIT 1][0];
+        WhiteListDataService.addToWhiteList(new List<String> {account.Id, contact.Id});
+        WhiteListDataService.WhiteListItemsData data = WhiteListDataService.getAllWhiteListItems();
+        System.assertEquals(2, data.items.size());
+    }
+
+    @isTest
+    private static void testGetRecordsNotInWhiteList() {
+        Account account = [SELECT Id FROM Account LIMIT 1][0];
+        WhiteListDataService.addToWhiteList(new List<String> {account.Id});
+        WhiteListDataService.WhiteListItemsData data = WhiteListDataService.getRecordsNotInWhiteList();
+        System.assertEquals(1, data.items.size());
+    }
 }
